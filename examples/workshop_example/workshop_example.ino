@@ -336,31 +336,72 @@ void mystery2(uint32_t color, uint16_t wait) {
   unpackColor(color, r, g, b);
   RGBtoHSV(r, g, b, h, s, v);
 
-  uint8_t min = 255;
-  uint8_t divisions = (strip.numPixels() * 2) + (strip.numPixels() / 2);
+  int num_loops = 100;
+  uint8_t divisions = 11;
   float one_unit = 3.14 / (float)divisions;
   float pos_on_unit_circle = 0;
-  float prev_pos = 0;
+  uint8_t intensities[divisions];
+  uint8_t min_intensity = 255;
 
+  // Precalculate all the floating point math so it doesn't slow down the loop
+  for (int i = 0; i < divisions; i++) {
+    // Use the cosine function to set the intensity to get a wave effect
+    intensities[i] = (uint8_t)(abs((cos(pos_on_unit_circle) * (float)v)));
+    pos_on_unit_circle += one_unit;
+    if ((intensities[i] < min_intensity) && intensities[i] > 5) {
+      min_intensity = intensities[i];
+    }
+  }
+
+  // Don't allow any LED to be black.
+  for (int i = 0; i < divisions; i++) {
+    if (intensities[i] < min_intensity) {
+      intensities[i] = min_intensity;
+    }
+  }
+  
+  uint16_t start_position = 0;
+  for (int loop = 0; loop < num_loops; loop++) {
+    // Advance the wave one unit on the unit circle.
+    for (int pixel = 0; pixel < strip.numPixels(); pixel++) {
+      uint8_t intensity = intensities[(pixel + start_position) % divisions];
+      strip.setPixelColor(pixel, HSVtoRGB(h, s, intensity));
+    }
+    strip.show();
+    delay(wait);
+    start_position += 1;
+    start_position = (start_position % strip.numPixels());
+  }
+}
+
+void mystery3() {
+  uint8_t wait = 20;
   for (int i = 0; i < 10; i++) {
-    for (int offset = 0; offset < strip.numPixels(); offset++) {
 
-      // Advance the wave one unit on the unit circle.
-      prev_pos = pos_on_unit_circle = prev_pos + one_unit;
-      for (int i = 0; i < strip.numPixels(); i++) {
-
-        // Use the cosine function to set the intensity to get a wave effect
-        uint8_t intensity = (uint8_t)(abs((cos(pos_on_unit_circle) * (float)v)));
-
-        if (intensity < min && intensity > 0) {
-          min = intensity;
+    // Move the light one way
+    for (int p = 0; p < strip.numPixels(); p++) {
+      strip.clear();
+      strip.setPixelColor(p, strip.Color(255, 0, 0));
+      if (p > 0) {
+        strip.setPixelColor(p - 1, strip.Color(127, 0, 0));
+        if (p > 1) {
+          strip.setPixelColor(p - 2, strip.Color(30, 0, 0));
         }
-        // Clamp the lowest intensity so there are no LEDs that are off.
-        if (intensity == 0) {
-          intensity = min / 2;
+      }
+      strip.show();
+      delay(wait);
+    }
+
+    // Move the light the opposite way
+    for (int p = strip.numPixels() - 2; p > 0; p--) {
+      strip.clear();
+      strip.setPixelColor(p, strip.Color(255, 0, 0));
+
+      if (p < strip.numPixels() - 1) {
+        strip.setPixelColor(p + 1, strip.Color(127, 0, 0));
+        if (p < strip.numPixels() - 2) {
+          strip.setPixelColor(p + 2, strip.Color(30, 0, 0));
         }
-        strip.setPixelColor((i + offset) % strip.numPixels(), HSVtoRGB(h, s, intensity));
-        pos_on_unit_circle += one_unit;
       }
       strip.show();
       delay(wait);
