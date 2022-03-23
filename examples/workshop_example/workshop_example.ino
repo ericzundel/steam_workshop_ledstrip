@@ -8,25 +8,26 @@
 // is different from mixing paint!
 //
 // Here are some RGB values for some common colors
-#define RED     RGB(100, 0, 0)     // 100% red, 0% green, 0% blue
-#define GREEN   RGB(0, 100, 0)     // 0% red, 100% green, 0% blue
-#define BLUE    RGB(0, 0, 100)     // 0% red, 0% green, 100% blue
-#define YELLOW  RGB(100, 100, 0)   // 100% red, 100% green, 0% blue
+#define RED     RGB(100,   0,   0)     // 100% red, 0% green, 0% blue
+#define GREEN   RGB(  0, 100,   0)     // 0% red, 100% green, 0% blue
+#define BLUE    RGB(  0,   0, 100)     // 0% red, 0% green, 100% blue
+#define YELLOW  RGB(100, 100,   0)   // 100% red, 100% green, 0% blue
 #define WHITE   RGB(100, 100, 100) // 100% of all colors
-#define BLACK   RGB(0, 0, 0)       // 0% of all colors (turns the LED off
+#define BLACK   RGB(  0,   0,   0)       // 0% of all colors (turns the LED off
 
 // ** Can you figure out the values for these colors?
 //#define LIGHTBLUE RGB(?, ?, ?)
 //#define LIGHTPINK RGB(?, ?, ?)
-//#define ORANGE(?, ?, ?)
-//#define CYAN(?, ?, ?)
-//#define PURPLE(?, ?, ?)
+//#define ORANGE RGB(?, ?, ?)
+//#define CYAN RGB(?, ?, ?)
+//#define PURPLE RGB(?, ?, ?)
 //#define MAGENTA RGB(?, ?, ?)
-//#define MYCOLOR1(?, ?, ?)
-//#define MYCOLOR2(?, ?, ?)
 
-// put your main code here, to run repeatedly:
+// ** Make your own colors and see what happens!
+//#define MYCOLOR1 RGB(?, ?, ?)
+//#define MYCOLOR2 RGB(?, ?, ?)
 
+// Put your main code here, to run repeatedly:
 void loop() {
 
   // PRINT() shows a message in the Serial Monitor.
@@ -53,14 +54,14 @@ void loop() {
   DELAY(2000);
 
   // Make all LEDs cycle through the colors one at a time.
-  // PRINT("Showing Rainbow with 20ms between colors");
-  // RAINBOW(20);
+  PRINT("Showing Rainbow with 20ms between colors");
+  RAINBOW(20);
 
-  //PRINT("Rainbow Cycle with 10ms between colors");
-  //RAINBOWCYCLE(10);
+  // PRINT("Rainbow Cycle with 10ms between colors");
+  // RAINBOWCYCLE(10);
 
   // PRINT("Chase a light down the strip");
-  //THEATERCHASE(GREEN, 100);
+  // THEATERCHASE(GREEN, 100);
 
   // PRINT("Theater Chase 2 with delay of 100 ms between blinks");
   // THEATERCHASE2(GREEN, BLUE, 100);
@@ -73,18 +74,15 @@ void loop() {
 
 
   // MYSTERY1(color)
-  // Mystery function?!?
   //   color - the color to use in the mystery effect
   // MYSTERY1(?)
 
   // MYSTERY2(color, wait)
-  // Mystery function?!?
   //   color - the color to use in the mystery effect
-  //   wait - The number of milliseconds to wait between turning the LEDs on and off.
-  // MYSTERY2(?, ?)
+  //   wait - The number of milliseconds to wait between blinking the LEDs
+  // MYSTERY2(?, ?);
 
-  // MYSTERY3()
-  // Mystery function?!?
+  // Mystery function 3. What could it be?!?
   // MYSTERY3();
 }
 
