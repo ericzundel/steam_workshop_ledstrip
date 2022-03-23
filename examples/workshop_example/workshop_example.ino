@@ -375,41 +375,6 @@ void mystery2(uint32_t color, uint16_t wait) {
 }
 
 void mystery3() {
-  uint8_t wait = 20;
-  for (int i = 0; i < 10; i++) {
-
-    // Move the light one way
-    for (int p = 0; p < strip.numPixels(); p++) {
-      strip.clear();
-      strip.setPixelColor(p, strip.Color(255, 0, 0));
-      if (p > 0) {
-        strip.setPixelColor(p - 1, strip.Color(127, 0, 0));
-        if (p > 1) {
-          strip.setPixelColor(p - 2, strip.Color(30, 0, 0));
-        }
-      }
-      strip.show();
-      delay(wait);
-    }
-
-    // Move the light the opposite way
-    for (int p = strip.numPixels() - 2; p > 0; p--) {
-      strip.clear();
-      strip.setPixelColor(p, strip.Color(255, 0, 0));
-
-      if (p < strip.numPixels() - 1) {
-        strip.setPixelColor(p + 1, strip.Color(127, 0, 0));
-        if (p < strip.numPixels() - 2) {
-          strip.setPixelColor(p + 2, strip.Color(30, 0, 0));
-        }
-      }
-      strip.show();
-      delay(wait);
-    }
-  }
-}
-
-void mystery3() {
   uint8_t wait = 100;
   for (int i = 0; i < 10; i++) {
 
