@@ -18,14 +18,16 @@
 // ** Can you figure out the values for these colors?
 //#define LIGHTBLUE RGB(?, ?, ?)
 //#define LIGHTPINK RGB(?, ?, ?)
-//#define ORANGE(?, ?, ?)
-//#define CYAN(?, ?, ?)
-//#define PURPLE(?, ?, ?)
+//#define ORANGE RGB(?, ?, ?)
+//#define CYAN RGB(?, ?, ?)
+//#define PURPLE RGB(?, ?, ?)
 //#define MAGENTA RGB(?, ?, ?)
-//#define MYCOLOR1(?, ?, ?)
-//#define MYCOLOR2(?, ?, ?)
 
-// put your main code here, to run repeatedly:
+// ** Try defining your own colors!
+//#define MYCOLOR1 RGB(?, ?, ?)
+//#define MYCOLOR2 RGB(?, ?, ?)
+
+// Put your main code here, to run repeatedly:
 
 void loop() {
 
@@ -56,11 +58,12 @@ void loop() {
   // PRINT("Showing Rainbow with 20ms between colors");
   // RAINBOW(20);
 
-  //PRINT("Rainbow Cycle with 10ms between colors");
-  //RAINBOWCYCLE(10);
+  // Similar to RAINBOW()
+  // PRINT("Rainbow Cycle with 10ms between colors");
+  // RAINBOWCYCLE(10);
 
   // PRINT("Chase a light down the strip");
-  //THEATERCHASE(GREEN, 100);
+  // THEATERCHASE(GREEN, 100);
 
   // PRINT("Theater Chase 2 with delay of 100 ms between blinks");
   // THEATERCHASE2(GREEN, BLUE, 100);
@@ -73,18 +76,17 @@ void loop() {
 
 
   // MYSTERY1(color)
-  // Mystery function?!?
   //   color - the color to use in the mystery effect
+  // PRINT("Mystery function 1, what does it do?!?");
   // MYSTERY1(?)
 
   // MYSTERY2(color, wait)
-  // Mystery function?!?
   //   color - the color to use in the mystery effect
   //   wait - The number of milliseconds to wait between turning the LEDs on and off.
+  // PRINT("Mystery function 2, what does it do ?!?");
   // MYSTERY2(?, ?)
 
-  // MYSTERY3()
-  // Mystery function?!?
+  // PRINT("Mystery function 3, what does it do?!?");
   // MYSTERY3();
 }
 
@@ -261,7 +263,7 @@ void mystery1(uint32_t color) {
   unpackColor(color, r, g, b);
   RGBtoHSV(r, g, b, h, s, v);
 
-  uint8_t wait = 500;
+  uint16_t wait = 250;
   uint8_t center_led = strip.numPixels() / 2;
   uint8_t num_loops = 50;
 
@@ -273,14 +275,13 @@ void mystery1(uint32_t color) {
 
     // Make the intensity of the light increase on each loop
     uint8_t intensity =  i * (v / num_loops);
-    Serial.println(intensity);
     strip.setPixelColor(center_led, HSVtoRGB(h, s, intensity));
     strip.show();
     delay(wait - (i * (wait / num_loops)));
   }
 
   // Fade in each LED starting from the center going out.
-  wait = 2000;
+  wait = 250; //  a quarter of a second per LED
   num_loops = 25;
   for (int i = 1; i < center_led; i++) {
     for (int j = 0; j < num_loops; j++) {
@@ -474,7 +475,7 @@ void RGBtoHSV(uint8_t R, uint8_t G, uint8_t B,  uint16_t& H, uint8_t& S, uint8_t
 uint32_t HSVtoRGB(float H, float S, float V) {
   if (H > 360 || H < 0 || S > 100 || S < 0 || V > 100 || V < 0) {
     Serial.println("HSVtoRGB: The givem HSV values are not in valid range");
-    return;
+    return 0;
   }
   float s = S / 100;
   float v = V / 100;

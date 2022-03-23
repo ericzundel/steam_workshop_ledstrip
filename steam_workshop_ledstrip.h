@@ -52,11 +52,14 @@ void theaterChase3(uint32_t c1, uint32_t c2, uint32_t c3, uint8_t wait);
 #define theaterchaserainbow(t) theaterChaseRainbow(t);
 void theaterChaseRainbow(uint8_t wait);
 
-#define MYSTERY1() mystery1();
-void mystery1();
+#define MYSTERY1(color) mystery1(color);
+void mystery1(uint32_t color);
 
-#define MYSTERY2() mystery2();
-void mystery2();
+#define MYSTERY2(color, wait) mystery2(color, wait);
+void mystery2(uint32_t color, uint16_t wait);
+
+#define MYSTERY3() mystery3();
+void mystery3();
 
 // Internal functions
 void unpackColor(uint32_t packed_color, uint8_t& R, uint8_t& G, uint8_t& B);
