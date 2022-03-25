@@ -61,7 +61,6 @@ void mystery2(uint32_t color, uint16_t wait);
 #define MYSTERY3() mystery3();
 void mystery3();
 
-
 // Internal functions
 void unpackColor(uint32_t packed_color, uint8_t& R, uint8_t& G, uint8_t& B);
 uint32_t HSVtoRGB(float H, float S,float V);

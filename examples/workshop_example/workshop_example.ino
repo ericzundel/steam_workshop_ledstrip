@@ -57,6 +57,7 @@ void loop() {
   PRINT("Showing Rainbow with 20ms between colors");
   RAINBOW(20);
 
+  // Similar to RAINBOW()
   // PRINT("Rainbow Cycle with 10ms between colors");
   // RAINBOWCYCLE(10);
 
@@ -75,14 +76,16 @@ void loop() {
 
   // MYSTERY1(color)
   //   color - the color to use in the mystery effect
-  // MYSTERY1(?)
+  // PRINT("Mystery function 1, what does it do?!?");
+  // MYSTERY1(?);
 
   // MYSTERY2(color, wait)
   //   color - the color to use in the mystery effect
   //   wait - The number of milliseconds to wait between blinking the LEDs
+  // PRINT("Mystery function 22, what does it do?!?");
   // MYSTERY2(?, ?);
 
-  // Mystery function 3. What could it be?!?
+  // PRINT("Mystery function 3, what does it do?!?");
   // MYSTERY3();
 }
 
@@ -259,7 +262,7 @@ void mystery1(uint32_t color) {
   unpackColor(color, r, g, b);
   RGBtoHSV(r, g, b, h, s, v);
 
-  uint8_t wait = 500;
+  uint16_t wait = 250;
   uint8_t center_led = strip.numPixels() / 2;
   uint8_t num_loops = 50;
 
@@ -271,14 +274,13 @@ void mystery1(uint32_t color) {
 
     // Make the intensity of the light increase on each loop
     uint8_t intensity =  i * (v / num_loops);
-    Serial.println(intensity);
     strip.setPixelColor(center_led, HSVtoRGB(h, s, intensity));
     strip.show();
     delay(wait - (i * (wait / num_loops)));
   }
 
   // Fade in each LED starting from the center going out.
-  wait = 2000;
+  wait = 250; //  a quarter of a second per LED
   num_loops = 25;
   for (int i = 1; i < center_led; i++) {
     for (int j = 0; j < num_loops; j++) {
@@ -333,35 +335,41 @@ void mystery2(uint32_t color, uint16_t wait) {
   unpackColor(color, r, g, b);
   RGBtoHSV(r, g, b, h, s, v);
 
-  uint8_t min = 255;
-  uint8_t divisions = (strip.numPixels() * 2) + (strip.numPixels() / 2);
+  int num_loops = 100;
+  uint8_t divisions = 11;
   float one_unit = 3.14 / (float)divisions;
   float pos_on_unit_circle = 0;
-  float prev_pos = 0;
+  uint8_t intensities[divisions];
+  uint8_t min_intensity = 255;
 
-  for (int i = 0; i < 10; i++) {
-    for (int offset = 0; offset < strip.numPixels(); offset++) {
-
-      // Advance the wave one unit on the unit circle.
-      prev_pos = pos_on_unit_circle = prev_pos + one_unit;
-      for (int i = 0; i < strip.numPixels(); i++) {
-
-        // Use the cosine function to set the intensity to get a wave effect
-        uint8_t intensity = (uint8_t)(abs((cos(pos_on_unit_circle) * (float)v)));
-
-        if (intensity < min && intensity > 0) {
-          min = intensity;
-        }
-        // Clamp the lowest intensity so there are no LEDs that are off.
-        if (intensity == 0) {
-          intensity = min / 2;
-        }
-        strip.setPixelColor((i + offset) % strip.numPixels(), HSVtoRGB(h, s, intensity));
-        pos_on_unit_circle += one_unit;
-      }
-      strip.show();
-      delay(wait);
+  // Precalculate all the floating point math so it doesn't slow down the loop
+  for (int i = 0; i < divisions; i++) {
+    // Use the cosine function to set the intensity to get a wave effect
+    intensities[i] = (uint8_t)(abs((cos(pos_on_unit_circle) * (float)v)));
+    pos_on_unit_circle += one_unit;
+    if ((intensities[i] < min_intensity) && intensities[i] > 5) {
+      min_intensity = intensities[i];
     }
+  }
+
+  // Don't allow any LED to be black.
+  for (int i = 0; i < divisions; i++) {
+    if (intensities[i] < min_intensity) {
+      intensities[i] = min_intensity;
+    }
+  }
+  
+  uint16_t start_position = 0;
+  for (int loop = 0; loop < num_loops; loop++) {
+    // Advance the wave one unit on the unit circle.
+    for (int pixel = 0; pixel < strip.numPixels(); pixel++) {
+      uint8_t intensity = intensities[(pixel + start_position) % divisions];
+      strip.setPixelColor(pixel, HSVtoRGB(h, s, intensity));
+    }
+    strip.show();
+    delay(wait);
+    start_position += 1;
+    start_position = (start_position % strip.numPixels());
   }
 }
 
@@ -472,7 +480,7 @@ void RGBtoHSV(uint8_t R, uint8_t G, uint8_t B,  uint16_t& H, uint8_t& S, uint8_t
 uint32_t HSVtoRGB(float H, float S, float V) {
   if (H > 360 || H < 0 || S > 100 || S < 0 || V > 100 || V < 0) {
     Serial.println("HSVtoRGB: The givem HSV values are not in valid range");
-    return;
+    return 0;
   }
   float s = S / 100;
   float v = V / 100;
